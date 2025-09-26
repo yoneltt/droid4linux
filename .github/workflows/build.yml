@@ -24,15 +24,16 @@ jobs:
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "cmdline-tools;latest"
 
-      - name: Install Gradle 8.9
+      - name: Generate Gradle wrapper 8.9
         run: |
-          curl -L -o gradle.zip https://services.gradle.org/distributions/gradle-8.9-bin.zip
-          unzip -q gradle.zip
-          echo "$GITHUB_WORKSPACE/gradle-8.9/bin" >> $GITHUB_PATH
-          gradle -v
+          gradle wrapper --gradle-version 8.9
+          ./gradlew -v
+
+      - name: List tasks (debug)
+        run: ./gradlew :app:tasks --all
 
       - name: Build debug APK
-        run: gradle :app:assembleDebug --stacktrace --no-daemon
+        run: ./gradlew :app:assembleDebug --stacktrace --no-daemon
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
